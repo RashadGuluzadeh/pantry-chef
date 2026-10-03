@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Your daily water goal and recipes based on what's in your kitchen.">
+  <meta name="theme-color" content="#16a34a">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Pantry Chef</title>
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 2.7c3.3 4 6 7.3 6 10.8a6 6 0 1 1-12 0c0-3.5 2.7-6.8 6-10.8z"/></symbol>
+    <symbol id="i-basket" viewBox="0 0 24 24"><path d="M5 11l1.6 8.4a2 2 0 0 0 2 1.6h6.8a2 2 0 0 0 2-1.6L19 11"/><path d="M3 11h18"/><path d="M8 11l3-7"/><path d="M16 11l-3-7"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></symbol>
+    <symbol id="i-utensils" viewBox="0 0 24 24"><path d="M3 2v7a3 3 0 0 0 6 0V2"/><path d="M6 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6h5zm0 0v7"/></symbol>
+    <symbol id="i-contrast" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.6-6.4L21 8"/><path d="M21 3v5h-5"/></symbol>
+  </svg>
+  <!-- ===== First launch: profile ===== -->
+  <section id="onboarding" class="onboarding" hidden>
+    <div class="onboarding-card">
+      <div class="brand brand-lg"><img class="brand-logo" src="icons/icon.svg" alt=""> <span class="brand-text">Pantry Chef</span></div>
+      <h1 id="onb-title">Welcome! Tell us a little about yourself</h1>
+      <p class="muted">This stays in this browser and is used to work out your daily water goal.</p>
+
+      <form id="profile-form" class="form-grid" novalidate>
+        <label class="field span-2">
+          <span>Your name</span>
+          <input name="name" type="text" autocomplete="given-name" placeholder="e.g. Rashad" maxlength="40">
+        </label>
+
+        <fieldset class="field span-2">
+          <legend>Sex</legend>
+          <div class="segmented">
+            <label><input type="radio" name="sex" value="male" checked><span>Male</span></label>
+            <label><input type="radio" name="sex" value="female"><span>Female</span></label>
+          </div>
+        </fieldset>
+
+        <label class="field">
+          <span>Age</span>
+          <input name="age" type="number" inputmode="numeric" min="10" max="110" required placeholder="30">
+        </label>
+        <label class="field">
+          <span>Weight (kg)</span>
+          <input name="weight" type="number" inputmode="decimal" min="25" max="300" step="0.1" required placeholder="75">
+        </label>
+        <label class="field">
+          <span>Height (cm)</span>
+          <input name="height" type="number" inputmode="numeric" min="100" max="250" required placeholder="175">
+        </label>
+        <label class="field">
+          <span>Physical activity</span>
+          <select name="activity">
+            <option value="sedentary">Sedentary — desk job, no exercise</option>
+            <option value="light" selected>Light — exercise 1–3× a week</option>
+            <option value="moderate">Moderate — exercise 3–5× a week</option>
+            <option value="active">Active — exercise 6–7× a week</option>
+            <option value="athlete">Very active — physical job or 2 workouts a day</option>
+          </select>
+        </label>
+
+        <fieldset class="field span-2">
+          <legend>What's the weather usually like where you are?</legend>
+          <div class="weather-options" id="weather-options"></div>
+          <p class="help">💡 In warm weather you lose more water through sweat, so your daily goal goes up. Weather changes, so you can also switch this each day on the water card.</p>
+        </fieldset>
+
+        <label class="field span-2" id="pregnancy-field" hidden>
+          <span>Special condition</span>
+          <select name="pregnancy">
+            <option value="none">None</option>
+            <option value="pregnant">Pregnant</option>
+            <option value="breastfeeding">Breastfeeding</option>
+          </select>
+        </label>
+
+        <p class="form-error span-2" id="profile-error" role="alert"></p>
+
+        <div class="span-2 form-actions">
+          <button type="button" class="btn btn-ghost" id="profile-cancel" hidden>Cancel</button>
+          <button type="submit" class="btn btn-primary btn-lg">Calculate &amp; continue →</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- ===== After sign-up: 5-second welcome ===== -->
+  <div id="welcome-loader" class="welcome-loader" hidden>
+    <div class="wl-card" role="status" aria-live="polite">
+      <div class="wl-ring">
+        <svg viewBox="0 0 120 120" aria-hidden="true">
+          <circle class="wl-bg" cx="60" cy="60" r="52"></circle>
+          <circle class="wl-fg" cx="60" cy="60" r="52"></circle>
+        </svg>
+        <span>🥗</span>
+      </div>
+      <h2 id="welcome-name">Welcome!</h2>
+      <p class="muted">Setting up your kitchen…</p>
+      <ul class="wl-steps">
+        <li class="wl-step">💧 Calculating your water goal</li>
+        <li class="wl-step">🔥 Working out calories &amp; protein</li>
+        <li class="wl-step">📖 Picking recipes for you</li>
+        <li class="wl-step">🍽️ Setting up your meal tracker</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== Main app ===== -->
+  <div id="app" class="app" hidden>
+    <header class="topbar">
+      <div class="brand"><img class="brand-logo" src="icons/icon.svg" alt=""> <span class="brand-text">Pantry Chef</span></div>
+      <nav class="tabs" role="tablist" aria-label="Sections">
+        <button role="tab" class="tab" data-tab="health" aria-selected="true"><svg class="ico" aria-hidden="true"><use href="#i-drop"></use></svg> <span>Water &amp; health</span></button>
+        <button role="tab" class="tab" data-tab="pantry" aria-selected="false"><svg class="ico" aria-hidden="true"><use href="#i-basket"></use></svg> <span>My kitchen</span> <b class="badge" id="pantry-count" hidden>0</b></button>
+        <button role="tab" class="tab" data-tab="recipes" aria-selected="false"><svg class="ico" aria-hidden="true"><use href="#i-book"></use></svg> <span>Recipes</span></button>
+        <button role="tab" class="tab" data-tab="meals" aria-selected="false"><svg class="ico" aria-hidden="true"><use href="#i-utensils"></use></svg> <span>My meals</span></button>
+      </nav>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="theme-toggle" title="Theme" aria-label="Toggle theme"><svg class="ico" aria-hidden="true"><use href="#i-contrast"></use></svg></button>
+        <button class="icon-btn" id="edit-profile" title="Profile" aria-label="Edit profile"><svg class="ico" aria-hidden="true"><use href="#i-user"></use></svg></button>
+      </div>
+    </header>
+
+    <main class="container">
+      <!-- Water & health -->
+      <section class="panel" id="tab-health" role="tabpanel">
+        <header class="page-head">
+          <p class="eyebrow" id="today-eyebrow"></p>
+          <h1 class="greeting" id="greeting"></h1>
+        </header>
+
+        <div class="grid-health">
+          <article class="card water-card">
+            <div class="card-head">
+              <h3>Today's water goal</h3>
+              <span class="chip water" id="water-goal-chip"></span>
+            </div>
+            <div class="water-body">
+              <div class="ring" id="water-ring" role="img" aria-label="Water intake">
+                <svg viewBox="0 0 120 120">
+                  <circle class="ring-bg" cx="60" cy="60" r="52"></circle>
+                  <circle class="ring-fg" id="ring-fg" cx="60" cy="60" r="52"></circle>
+                </svg>
+                <div class="ring-label">
+                  <strong id="water-drunk">0</strong>
+                  <span id="water-of">/ 0 ml</span>
+                </div>
+              </div>
+              <div class="water-actions">
+                <p class="muted" id="water-hint"></p>
+                <div class="btn-row">
+                  <button class="btn btn-water" data-water="250">🥛 +1 glass <small>250 ml</small></button>
+                  <button class="btn btn-water" data-water="500">🍶 +1 bottle <small>500 ml</small></button>
+                </div>
+                <div class="btn-row">
+                  <button class="btn btn-ghost btn-sm" data-water="-250">− Undo 250 ml</button>
+                  <button class="btn btn-ghost btn-sm" id="water-reset">Reset</button>
+                </div>
+                <div class="glasses" id="glasses" aria-hidden="true"></div>
+              </div>
+            </div>
+            <div class="today-weather">
+              <span class="small muted">Today's weather:</span>
+              <div class="weather-mini" id="weather-mini" role="radiogroup" aria-label="Today's weather"></div>
+            </div>
+          </article>
+
+          <article class="card schedule-card">
+            <h3>Drinking schedule</h3>
+            <ol class="schedule" id="schedule"></ol>
+          </article>
+
+          <article class="card stats-card">
+            <h3>Your numbers</h3>
+            <dl class="stats" id="stats"></dl>
+            <p class="disclaimer">ℹ️ Based on general guidelines: about 33 ml per kg of body weight, plus extra for activity and warm weather. Calories use the Mifflin-St Jeor formula. If you have kidney or heart conditions or follow a special diet, check with your doctor.</p>
+          </article>
+        </div>
+
+        <article class="card dehydration">
+          <h3>⚠️ What happens if you don't drink enough water?</h3>
+          <p class="muted">Your body is about 60% water. Losing even 1–2% of it — less than a litre — is already enough to feel the effects.</p>
+          <div class="harm-grid">
+            <div class="harm"><span>🧠</span><div><strong>Headaches &amp; poor focus</strong><p>The brain is very sensitive to water loss: memory, attention and mood get worse.</p></div></div>
+            <div class="harm"><span>😴</span><div><strong>Tiredness &amp; low energy</strong><p>Thicker blood makes the heart work harder, so you feel weak and sleepy.</p></div></div>
+            <div class="harm"><span>💫</span><div><strong>Dizziness</strong><p>Blood pressure can drop, especially when standing up quickly.</p></div></div>
+            <div class="harm"><span>🫘</span><div><strong>Kidney stones &amp; infections</strong><p>Too little water concentrates the urine and raises the risk of kidney stones and urinary infections.</p></div></div>
+            <div class="harm"><span>🧴</span><div><strong>Dry skin &amp; lips</strong><p>Skin loses elasticity and looks dull and tired.</p></div></div>
+            <div class="harm"><span>🍽️</span><div><strong>Constipation &amp; false hunger</strong><p>Digestion slows down, and thirst is often mistaken for hunger.</p></div></div>
+            <div class="harm"><span>🌡️</span><div><strong>Overheating</strong><p>In hot weather or during sport, dehydration can lead to heat exhaustion or heat stroke.</p></div></div>
+            <div class="harm"><span>🚨</span><div><strong>Warning signs</strong><p>Dark yellow urine, dry mouth, thirst, headache, rapid heartbeat. Pale yellow urine means you're doing well.</p></div></div>
+          </div>
+          <a class="video-card" href="https://www.youtube.com/watch?v=9iMGFqMmUFs" target="_blank" rel="noopener">
+            <div class="video-thumb">
+              <img src="https://i.ytimg.com/vi/9iMGFqMmUFs/hqdefault.jpg" alt="" loading="lazy">
+              <span class="play">▶</span>
+            </div>
+            <div>
+              <strong>What would happen if you didn't drink water?</strong>
+              <small>TED-Ed · 5 min animated video · opens on YouTube</small>
+            </div>
+          </a>
+        </article>
+
+        <div class="cta card">
+          <div>
+            <h3>What shall we cook today?</h3>
+            <p class="muted">Add what you have at home and we'll find recipes that fit.</p>
+          </div>
+          <button class="btn btn-primary" data-goto="pantry">Add ingredients →</button>
+        </div>
+      </section>
+
+      <!-- My kitchen -->
+      <section class="panel" id="tab-pantry" role="tabpanel" hidden>
+        <header class="page-head">
+          <p class="eyebrow">My kitchen</p>
+          <h1>What's in your fridge?</h1>
+          <p class="muted">Add what you have and we'll find recipes you can cook right now.</p>
+        </header>
+        <div class="card">
+          <h3>What do you have at home?</h3>
+          <p class="muted">Type an ingredient, the amount and the unit. For example: <em>Chicken — 200 g</em>, <em>Onion — 1 pcs</em>.</p>
+
+          <form id="add-form" class="add-form" autocomplete="off">
+            <label class="field grow">
+              <span>Ingredient</span>
+              <input id="ing-name" list="ing-list" placeholder="e.g. chicken, onion, potatoes…" required>
+              <datalist id="ing-list"></datalist>
+            </label>
+            <label class="field qty">
+              <span>Amount</span>
+              <input id="ing-qty" type="number" inputmode="decimal" min="0" step="any" placeholder="200">
+            </label>
+            <label class="field unit">
+              <span>Unit</span>
+              <select id="ing-unit">
+                <option value="g">g</option>
+                <option value="kg">kg</option>
+                <option value="ml">ml</option>
+                <option value="l">L</option>
+                <option value="pcs">pcs</option>
+              </select>
+            </label>
+            <button class="btn btn-primary add-btn" type="submit">+ Add</button>
+          </form>
+          <p class="form-error" id="add-error" role="alert"></p>
+
+          <div class="quick">
+            <span class="muted small">Quick add:</span>
+            <div class="quick-list" id="quick-list"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h3>My list</h3>
+            <button class="btn btn-ghost btn-sm" id="pantry-clear" hidden>Clear all</button>
+          </div>
+          <ul class="pantry" id="pantry-list"></ul>
+          <p class="empty" id="pantry-empty">Nothing added yet.</p>
+
+          <label class="switch">
+            <input type="checkbox" id="staples-toggle" checked>
+            <span class="switch-track"></span>
+            <span>Assume I have salt, pepper, oil, sugar, spices, vinegar and water</span>
+          </label>
+        </div>
+
+        <div class="cta card">
+          <div>
+            <h3 id="pantry-cta-title">Browse recipes</h3>
+            <p class="muted" id="pantry-cta-text"></p>
+          </div>
+          <button class="btn btn-primary" data-goto="recipes">Show recipes →</button>
+        </div>
+      </section>
+
+      <!-- Recipes -->
+      <section class="panel" id="tab-recipes" role="tabpanel" hidden>
+        <header class="page-head">
+          <p class="eyebrow">Recipes</p>
+          <h1>What shall we cook?</h1>
+          <p class="muted" id="recipes-sub"></p>
+        </header>
+        <div class="toolbar">
+          <input type="search" id="recipe-search" placeholder="🔍 Search recipes or ingredients…" aria-label="Search recipes">
+          <select id="cuisine-filter" aria-label="Cuisine"></select>
+          <select id="level-filter" aria-label="Difficulty">
+            <option value="All">📶 All levels</option>
+            <option value="Easy">🟢 Easy</option>
+            <option value="Medium">🟡 Medium</option>
+            <option value="Hard">🔴 Hard</option>
+          </select>
+          <select id="sort-by" aria-label="Sort">
+            <option value="match">↕️ Best match</option>
+            <option value="easy">🟢 Easy → Hard</option>
+            <option value="hard">🔴 Hard → Easy</option>
+            <option value="quick">⏱ Quickest first</option>
+            <option value="protein">💪 Most protein</option>
+            <option value="light">🔥 Fewest calories</option>
+          </select>
+        </div>
+        <div class="chips" id="category-chips"></div>
+        <div class="toggles">
+          <label class="switch compact">
+            <input type="checkbox" id="only-ready">
+            <span class="switch-track"></span>
+            <span>Only what I can cook now</span>
+          </label>
+          <label class="switch compact" title="20 minutes or less, easy, at most 4 main ingredients">
+            <input type="checkbox" id="only-simple">
+            <span class="switch-track"></span>
+            <span>🎓 Student-friendly <span class="muted">(≤ 20 min, ≤ 4 ingredients)</span></span>
+          </label>
+          <label class="switch compact">
+            <input type="checkbox" id="only-veg">
+            <span class="switch-track"></span>
+            <span>🌱 Vegetarian</span>
+          </label>
+        </div>
+        <p class="muted small" id="recipe-summary"></p>
+        <div class="recipe-grid" id="recipe-grid"></div>
+        <p class="empty" id="recipe-empty" hidden>No matching recipes. Try other filters or add more ingredients.</p>
+      </section>
+      <!-- My meals -->
+      <section class="panel" id="tab-meals" role="tabpanel" hidden>
+        <header class="page-head">
+          <p class="eyebrow">My meals</p>
+          <h1>How are you eating today?</h1>
+          <p class="muted">Log your meals and see how they add up.</p>
+        </header>
+        <div class="card">
+          <h3>Log what you ate</h3>
+          <p class="muted">Pick the meal, then a recipe (in servings) or a single food (in g, ml or pcs).</p>
+          <form id="meal-form" class="add-form meal-form" autocomplete="off">
+            <label class="field meal-type">
+              <span>Meal</span>
+              <select id="meal-type">
+                <option value="breakfast">🌅 Breakfast</option>
+                <option value="lunch">☀️ Lunch</option>
+                <option value="dinner">🌙 Dinner</option>
+                <option value="snack">🍎 Snack</option>
+              </select>
+            </label>
+            <label class="field grow">
+              <span>What did you eat?</span>
+              <input id="food-name" list="food-list" placeholder="e.g. Chicken pilaf, Banana, Bread…" required>
+              <datalist id="food-list"></datalist>
+            </label>
+            <label class="field qty">
+              <span>How much?</span>
+              <input id="food-qty" type="number" inputmode="decimal" min="0" step="any" value="1">
+            </label>
+            <label class="field unit">
+              <span>Unit</span>
+              <select id="food-unit"></select>
+            </label>
+            <button class="btn btn-primary add-btn" type="submit">+ Log</button>
+          </form>
+          <p class="food-preview" id="food-preview"></p>
+          <p class="form-error" id="meal-error" role="alert"></p>
+        </div>
+
+        <div class="grid-meals">
+          <article class="card">
+            <div class="card-head">
+              <h3>Today</h3>
+              <span class="chip" id="today-date"></span>
+            </div>
+            <div id="meal-list"></div>
+          </article>
+
+          <article class="card">
+            <h3>Today's result</h3>
+            <div class="nutri-bars" id="nutri-bars"></div>
+            <ul class="feedback" id="feedback"></ul>
+            <div id="suggestions"></div>
+          </article>
+        </div>
+
+        <article class="card">
+          <h3>Last 7 days</h3>
+          <div class="history" id="history"></div>
+        </article>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <div class="brand"><img class="brand-logo" src="icons/icon.svg" alt=""> <span class="brand-text">Pantry Chef</span></div>
+          <p class="footer-tagline">Find recipes from what's already in your kitchen, track your meals and stay on top of your water.</p>
+        </div>
+        <ul class="footer-features">
+          <li><svg class="ico" aria-hidden="true"><use href="#i-basket"></use></svg> Pantry-based recipe finder</li>
+          <li><svg class="ico" aria-hidden="true"><use href="#i-utensils"></use></svg> Meal &amp; nutrition tracking</li>
+          <li><svg class="ico" aria-hidden="true"><use href="#i-drop"></use></svg> Personal daily water goal</li>
+        </ul>
+      </div>
+      <div class="footer-bottom">
+        <span>© <span id="footer-year"></span> Pantry Chef</span>
+        <span class="footer-dot" aria-hidden="true">·</span>
+        <span>Works offline. Your data stays in this browser.</span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Recipe details -->
+  <dialog id="recipe-dialog" class="dialog" aria-labelledby="dlg-title">
+    <div id="dialog-content"></div>
+  </dialog>
+
+  <!-- Daily love note -->
+  <dialog id="note-dialog" class="dialog note" aria-labelledby="note-title">
+    <div class="note-inner">
+      <div class="note-hearts" aria-hidden="true"><span>❤</span><span>💕</span><span>❤</span><span>💗</span><span>❤</span></div>
+      <p class="note-kicker" id="note-title">💌 A little note for today</p>
+      <blockquote class="note-text" id="note-text"></blockquote>
+      <p class="note-by" id="note-by" hidden></p>
+      <p class="note-sign" id="note-sign"></p>
+      <div class="note-actions">
+        <button class="btn btn-primary btn-lg note-btn" data-close-note>❤️ Aww, thank you</button>
+        <button class="note-renew" id="note-renew" type="button"><svg class="ico" aria-hidden="true"><use href="#i-refresh"></use></svg> <span>Another note for today</span></button>
+      </div>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/config.js"></script>
+  <script src="js/love-notes.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/images.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

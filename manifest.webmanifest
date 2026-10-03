@@ -1,0 +1,14 @@
+{
+  "name": "Pantry Chef",
+  "short_name": "Pantry Chef",
+  "description": "Daily water goal and recipes based on what you have at home",
+  "lang": "en",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f7f4",
+  "theme_color": "#16a34a",
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
